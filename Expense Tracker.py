@@ -109,7 +109,7 @@ def search_expense():
             found = True
             break
     if not found:
-        print("Expese Not Found!")
+        print("Expense Not Found!")
 
 def update_expense():
     try:
@@ -256,7 +256,6 @@ while True:
         lowest_expense()
     elif choice == 0:
         exit_system()
-        break
     else:
         print("Invalid Choice! Choose between 0 to 8")
 
