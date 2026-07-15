@@ -3,32 +3,59 @@
 # Language: Python
 # Level: Beginner
 
+import json
+import sys
+import os
+
 print ("============ Welcome to Expense Tracker SYSTEM =============")
 
-expenses = [
-    {"Expense ID": 101, "Title": "Groceries", "Category": "Food", "Amount": 3500.0},
-    {"Expense ID": 102, "Title": "Bus Fare", "Category": "Transport", "Amount": 800.0},
-    {"Expense ID": 103, "Title": "Electricity Bill", "Category": "Bills", "Amount": 5200.0},
-    {"Expense ID": 104, "Title": "Internet Bill", "Category": "Bills", "Amount": 2500.0},
-    {"Expense ID": 105, "Title": "Mobile Recharge", "Category": "Bills", "Amount": 1200.0},
-    {"Expense ID": 106, "Title": "Movie Ticket", "Category": "Entertainment", "Amount": 1800.0},
-    {"Expense ID": 107, "Title": "Restaurant", "Category": "Food", "Amount": 2700.0},
-    {"Expense ID": 108, "Title": "Books", "Category": "Education", "Amount": 4500.0},
-    {"Expense ID": 109, "Title": "Petrol", "Category": "Fuel", "Amount": 6000.0},
-    {"Expense ID": 110, "Title": "Medicine", "Category": "Health", "Amount": 2200.0},
-    {"Expense ID": 111, "Title": "Gym Fee", "Category": "Health", "Amount": 3000.0},
-    {"Expense ID": 112, "Title": "Coffee", "Category": "Food", "Amount": 650.0},
-    {"Expense ID": 113, "Title": "Laptop Repair", "Category": "Electronics", "Amount": 8500.0},
-    {"Expense ID": 114, "Title": "Clothes", "Category": "Shopping", "Amount": 7200.0},
-    {"Expense ID": 115, "Title": "Shoes", "Category": "Shopping", "Amount": 4800.0},
-    {"Expense ID": 116, "Title": "Streaming Subscription", "Category": "Entertainment", "Amount": 900.0},
-    {"Expense ID": 117, "Title": "Stationery", "Category": "Education", "Amount": 1100.0},
-    {"Expense ID": 118, "Title": "Water Bill", "Category": "Bills", "Amount": 1400.0},
-    {"Expense ID": 119, "Title": "Gift", "Category": "Miscellaneous", "Amount": 2600.0},
-    {"Expense ID": 120, "Title": "Taxi", "Category": "Transport", "Amount": 1500.0}
-]
+# ---------------- File Handling ----------------
+
+def load_expenses():
+    try:
+        with open("expenses.json", "r") as file:
+            return json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+def save_expenses():
+    with open("expenses.json", "w") as file:
+        json.dump(expenses, file, indent=4)
+
+expenses = load_expenses()
+
+if not expenses:
+    expenses = [
+        {"Expense ID": 101, "Title": "Groceries", "Category": "Food", "Amount": 3500.0},
+        {"Expense ID": 102, "Title": "Bus Fare", "Category": "Transport", "Amount": 800.0},
+        {"Expense ID": 103, "Title": "Electricity Bill", "Category": "Bills", "Amount": 5200.0},
+        {"Expense ID": 104, "Title": "Internet Bill", "Category": "Bills", "Amount": 2500.0},
+        {"Expense ID": 105, "Title": "Mobile Recharge", "Category": "Bills", "Amount": 1200.0},
+        {"Expense ID": 106, "Title": "Movie Ticket", "Category": "Entertainment", "Amount": 1800.0},
+        {"Expense ID": 107, "Title": "Restaurant", "Category": "Food", "Amount": 2700.0},
+        {"Expense ID": 108, "Title": "Books", "Category": "Education", "Amount": 4500.0},
+        {"Expense ID": 109, "Title": "Petrol", "Category": "Fuel", "Amount": 6000.0},
+        {"Expense ID": 110, "Title": "Medicine", "Category": "Health", "Amount": 2200.0},
+        {"Expense ID": 111, "Title": "Gym Fee", "Category": "Health", "Amount": 3000.0},
+        {"Expense ID": 112, "Title": "Coffee", "Category": "Food", "Amount": 650.0},
+        {"Expense ID": 113, "Title": "Laptop Repair", "Category": "Electronics", "Amount": 8500.0},
+        {"Expense ID": 114, "Title": "Clothes", "Category": "Shopping", "Amount": 7200.0},
+        {"Expense ID": 115, "Title": "Shoes", "Category": "Shopping", "Amount": 4800.0},
+        {"Expense ID": 116, "Title": "Streaming Subscription", "Category": "Entertainment", "Amount": 900.0},
+        {"Expense ID": 117, "Title": "Stationery", "Category": "Education", "Amount": 1100.0},
+        {"Expense ID": 118, "Title": "Water Bill", "Category": "Bills", "Amount": 1400.0},
+        {"Expense ID": 119, "Title": "Gift", "Category": "Miscellaneous", "Amount": 2600.0},
+        {"Expense ID": 120, "Title": "Taxi", "Category": "Transport", "Amount": 1500.0}
+    ]
+    save_expenses()
 
 # ----------------  FUNCTIONS:   ----------------
+
+def print_expense(expense):
+    print(f"{expense['Expense ID']:<17} {expense['Title']:<28} {expense['Category']:<25} {format_currency(expense['Amount']):<30} ")
+
+def format_currency(salary):
+        return f"Rs. {salary:,}"
 
 def add_expense():
     try:
@@ -76,40 +103,76 @@ def add_expense():
     }
 
     expenses.append(new_expense)
+    save_expenses()
     print("New Expense Added Successfully!")
 
 def view_expense():
     if len(expenses) == 0:
         print("No Expenses in record!")
         return
+    expenses.sort(key=lambda emp: emp["Expense ID"])
+    print("="*110)
+    print("{:<20} {:<24} {:<28} {:<25} ".format("Expense ID", "Title", "Category", "Amount"))
+    print("="*110)
     for expense in expenses:
-            print("---------------------------------------------------")
-            print("Title:", expense["Title"])
-            print("Category:", expense["Category"])
-            print("Expense ID:", expense["Expense ID"])
-            print("Amount:", expense["Amount"])
-            print("---------------------------------------------------")
+        print_expense(expense)
+    print("="*110)
 
 def search_expense():
+    print("Search By:")
+    print("1. Search by ID")
+    print("2. Search by Category")
+
     try:
-        search = int(input("Enter the Expense ID: "))
+        search_option = int(input("Enter your choice: "))
     except ValueError:
-        print("Invalid Expense ID! Please enter a number.")
+        print("Invalid choice! Please enter a number.")
         return
 
-    found = False
-    for expense in expenses:
-        if expense["Expense ID"] == search:
-            print("---------------------------------------------------")
-            print("Title:", expense["Title"])
-            print("Category:", expense["Category"])
-            print("Expense ID:", expense["Expense ID"])
-            print("Amount:", expense["Amount"])
-            print("---------------------------------------------------")
-            found = True
-            break
-    if not found:
-        print("Expense Not Found!")
+    if search_option == 1:
+        try:
+            search = int(input("Enter the Expense ID: "))
+        except ValueError:
+            print("Invalid Expense ID! Please enter a number.")
+            return
+
+        found = False
+        for expense in expenses:
+            if expense["Expense ID"] == search:
+                print("="*110)
+                print("{:<20} {:<24} {:<28} {:<25} ".format("Expense ID", "Title", "Category", "Amount"))
+                print("="*110)
+                print_expense(expense)
+                print("="*110)
+                found = True
+                break
+        if not found:
+            print("Expense Not Found!")
+
+    elif search_option == 2:
+        search_category = input("Enter the Expense Category: ").strip()
+        if search_category == "":
+            print("Category cannot be empty!")
+            return
+
+        matches = []
+        for expense in expenses:
+            if search_category.lower() in expense["Category"].lower():
+                matches.append(expense)
+
+        if not matches:
+            print("Expense Not Found!")
+            return
+
+        print("="*110)
+        print("{:<20} {:<24} {:<28} {:<25} ".format("Expense ID", "Title", "Category", "Amount"))
+        print("="*110)
+        for expense in matches:
+            print_expense(expense)
+        print("="*110)
+
+    else:
+        print("Invalid choice! Please choose 1 or 2.")
 
 def update_expense():
     try:
@@ -121,12 +184,13 @@ def update_expense():
     found = False
     for expense in expenses:
         if expense["Expense ID"] == search:
-            print("---------------------------------------------------")
-            print("Title:", expense["Title"])
-            print("Category:", expense["Category"])
-            print("Expense ID:", expense["Expense ID"])
-            print("Amount:", expense["Amount"])
-            print("---------------------------------------------------")
+            print("-"*110)
+            print("Current Details")
+            print("="*110)
+            print("{:<20} {:<24} {:<28} {:<25} ".format("Expense ID", "Title", "Category", "Amount"))
+            print("="*110)
+            print_expense(expense)
+            print("="*110)
 
             Title = input("Enter the new Expense name (leave blank to keep current): ")
             Category= input("Enter the new Category name (leave blank to keep current): ")
@@ -145,6 +209,7 @@ def update_expense():
                         expense["Amount"] = amount_input
                 except ValueError:
                     print("Invalid Amount! Keeping current amount.")
+            save_expenses()
             print("Expense Updated Successfully!")
             found = True
             break
@@ -166,6 +231,7 @@ def delete_expense():
                 print("Deletion cancelled.")
                 return
             expenses.remove(expense)
+            save_expenses()
             print("Expense Deleted Successfully!")
             found = True
             break
@@ -178,7 +244,7 @@ def total_expense():
         return
     total = sum(expense["Amount"] for expense in expenses)
     print("---------------------------------------------------")
-    print("Total Expenses: ", total)
+    print(f"Total Expenses: {format_currency(total)}")
     print("---------------------------------------------------")
 
 def highest_expense():
@@ -186,25 +252,32 @@ def highest_expense():
         print("No Expenses in record!")
         return
     highest = max(expenses, key=lambda x: x["Amount"])
-    print("---------------------------------------------------")
-    print("Highest Expense:")
-    print("Title:", highest["Title"])
-    print("Category:", highest["Category"])
-    print("Expense ID:", highest["Expense ID"])
-    print("Amount:", highest["Amount"])
-    print("---------------------------------------------------")
+    print("----------------------------------------------- Highest Expense ---------------------------------------------- ")
+    print("="*110)
+    print("{:<20} {:<24} {:<28} {:<25} ".format("Expense ID", "Title", "Category", "Amount"))
+    print("="*110)
+    print_expense(highest)
+    print("="*110)
 
 def lowest_expense():
     if len(expenses) == 0:
         print("No Expenses in record!")
         return
     lowest = min(expenses, key=lambda x: x["Amount"])
+    print("----------------------------------------------- Lowest Expense ----------------------------------------------- ")
+    print("="*110)
+    print("{:<20} {:<24} {:<28} {:<25} ".format("Expense ID", "Title", "Category", "Amount"))
+    print("="*110)
+    print_expense(lowest)
+    print("="*110)
+
+def average_expense():
+    if len(expenses) == 0:
+        print("No Expenses in record!")
+        return
+    average = sum(expense["Amount"] for expense in expenses) / len(expenses)
     print("---------------------------------------------------")
-    print("Lowest Expense:")
-    print("Title:", lowest["Title"])
-    print("Category:", lowest["Category"])
-    print("Expense ID:", lowest["Expense ID"])
-    print("Amount:", lowest["Amount"])
+    print(f"Average Expense: {format_currency(average)}")
     print("---------------------------------------------------")
 
 def exit_system():
@@ -212,13 +285,12 @@ def exit_system():
     print("Exiting the Expense Tracker.")
     print("Thank you for using the system. Goodbye!")
     print("---------------------------------------------------")
-    import sys
     sys.exit()
 
 # ----------------  MENU  ----------------
 while True:
     print()
-    print("=============== Select the Option (0-8) ===============")
+    print("=============== Select the Option (0-9) ===============")
     print("1. Add Expense")
     print("2. View Expenses")
     print("3. Search Expense")
@@ -227,7 +299,9 @@ while True:
     print("6. Total Expenses")
     print("7. Highest Expense")
     print("8. Lowest Expense")
+    print("9. Average Expense")
     print("0. Exit")
+    print("========================================================")
 
     try:
         choice = int(input("Enter the number: "))
@@ -254,8 +328,10 @@ while True:
         highest_expense()
     elif choice == 8:
         lowest_expense()
+    elif choice == 9:
+        average_expense()
     elif choice == 0:
         exit_system()
     else:
-        print("Invalid Choice! Choose between 0 to 8")
+        print("Invalid Choice! Choose between 0 to 9")
 
