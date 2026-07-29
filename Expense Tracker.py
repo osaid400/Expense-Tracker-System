@@ -9,11 +9,21 @@ from datetime import datetime
 
 class Expense:
 
-    def __init__(self, expense_id, title, category, amount):
+    def __init__(self, expense_id, title, category, amount, date_time=None):
+        self.expense_id = expense_id
         self.title = title
-        self.expense_id = int(expense_id)
         self.category = category
         self.amount = amount
+        if date_time is None:
+            self.date_time = datetime.now().strftime("%d-%m-%y %H:%M:%S")
+        else:
+            self.date_time = date_time
+
+    @classmethod
+    def with_date_time(cls, expense_id, title, category, amount, date_time):
+        expense = cls(expense_id, title, category, amount)
+        expense.date_time = date_time
+        return expense
 
     def __str__(self):
         return (
@@ -49,28 +59,27 @@ class Expense_Manager:
         self.load_expenses()
         if not self.expenses:
             self.expenses = [
-                Expense("Groceries",101, "Food", 3500.0),
-                Expense("Bus Fare",102, "Transport", 800.0),
-                Expense("Electricity Bill", 103, "Bills", 5200.0),
-                Expense("Internet Bill", 104, "Bills", 2500.0),
-                Expense("Mobile Recharge", 105, "Bills", 1200.0),
-                Expense("Movie Ticket", 106, "Entertainment", 1800.0),
-                Expense("Restaurant", 107, "Food", 2700.0),
-                Expense("Books", 108, "Education", 4500.0),
-                Expense("Petrol", 109, "Fuel", 6000.0),
-                Expense("Medicine", 110, "Health", 2200.0),
-                Expense("Gym Fee", 111, "Health", 3000.0),
-                Expense("Coffee", 112, "Food", 650.0),
-                Expense("Laptop Repair", 113, "Electronics", 8500.0),
-                Expense("Clothes", 114, "Shopping",7200.0),
-                Expense("Shoes", 115, "Shopping", 4800.0),
-                Expense("Streaming Sub", 116, "Entertainment",900.0),
-                Expense("Stationery", 117, "Education", 1100.0),
-                Expense("Water Bill", 118, "Bills", 1400.0),
-                Expense("Gift", 119, "Miscellaneous", 2600.0),
-                Expense("Taxi", 120, "Transport", 1500.0)
+                Expense(101, "Groceries", "Food", 3500.0, "2023-03-01 12:00:00"),
+                Expense(102, "Bus Fare", "Transport", 800.0, "2023-03-02 08:00:00"),
+                Expense(103, "Electricity Bill", "Bills", 5200.0, "2023-03-03 10:00:00"),
+                Expense(104, "Internet Bill", "Bills", 2500.0, "2023-03-04 14:00:00"),
+                Expense(105, "Mobile Recharge", "Bills", 1200.0, "2023-03-05 16:00:00"),
+                Expense(106, "Movie Ticket", "Entertainment", 1800.0, "2023-03-06 20:00:00"),
+                Expense(107, "Restaurant", "Food", 2700.0, "2023-03-07 19:00:00"),
+                Expense(108, "Books", "Education", 4500.0, "2023-03-08 11:00:00"),
+                Expense(109, "Petrol", "Fuel", 6000.0, "2023-03-09 09:00:00"),
+                Expense(110, "Medicine", "Health", 2200.0, "2023-03-10 15:00:00"),
+                Expense(111, "Gym Fee", "Health", 3000.0, "2023-03-11 18:00:00"),
+                Expense(112, "Coffee", "Food", 650.0, "2023-03-12 10:00:00"),
+                Expense(113, "Laptop Repair", "Electronics", 8500.0, "2023-03-13 13:00:00"),
+                Expense(114, "Clothes", "Shopping", 7200.0, "2023-03-14 17:00:00"),
+                Expense(115, "Shoes", "Shopping", 4800.0, "2023-03-15 12:00:00"),
+                Expense(116, "Streaming Sub", "Entertainment", 900.0, "2023-03-16 09:00:00"),
+                Expense(117, "Stationery", "Education", 1100.0, "2023-03-17 11:00:00"),
+                Expense(118, "Water Bill", "Bills", 1400.0, "2023-03-18 14:00:00"),
+                Expense(119, "Gift", "Miscellaneous", 2600.0, "2023-03-19 16:00:00"),
+                Expense(120, "Taxi", "Transport", 1500.0, "2023-03-20 18:00:00")
             ]
-
             self.save_expenses()
 
     def load_expenses(self):
@@ -96,10 +105,7 @@ class Expense_Manager:
         return f"Rs. {salary:,.0f}"
 
     def print_expense(self, expense):
-        try:
-            print(f"{expense.expense_id:<20} {expense.title:<24} {expense.category:<28} {self.format_currency(expense.amount):<25}")
-        except Exception as e: 
-            print(f"An error occurred: {e}")
+        print(f"{expense.expense_id:<20} {expense.title:<24} {expense.category:<28} {self.format_currency(expense.amount):<25} {expense.date_time:<25}")
 
     def total_expense(self):
         if len(self.expenses) == 0:
@@ -117,11 +123,11 @@ class Expense_Manager:
         
         highest = max(self.expenses, key=lambda x: x.amount)
         print("----------------------------------------------- Highest Expense ---------------------------------------------- ")
-        print("="*110)
-        print("{:<20} {:<24} {:<28} {:<25} ".format("Expense ID", "Title", "Category", "Amount"))
-        print("="*110)
+        print("="*120)
+        print("{:<20} {:<24} {:<28} {:<25} {:<25} ".format("Expense ID", "Title", "Category", "Amount", "Date and Time"))
+        print("="*120)
         self.print_expense(highest)
-        print("="*110)
+        print("="*120)
 
     def lowest_expense(self):
         if len(self.expenses) == 0:
@@ -130,11 +136,11 @@ class Expense_Manager:
         lowest = min(self.expenses, key=lambda x: x.amount)
 
         print("----------------------------------------------- Lowest Expense ----------------------------------------------- ")
-        print("="*110)
-        print("{:<20} {:<24} {:<28} {:<25} ".format("Expense ID", "Title", "Category", "Amount"))
-        print("="*110)
+        print("="*120)
+        print("{:<20} {:<24} {:<28} {:<25} {:<25}  ".format("Expense ID", "Title", "Category", "Amount", "Date and Time"))
+        print("="*120)
         self.print_expense(lowest)
-        print("="*110)
+        print("="*120)
 
     def average_expense(self):
         if len(self.expenses) == 0:
@@ -207,11 +213,11 @@ class Expense_Manager:
                 return
             found = self._find_by_id(search_id)
             if found:
-                print("="*110)
-                print("{:<20} {:<24} {:<28} {:<25} ".format("Expense ID", "Title", "Category", "Amount"))
-                print("="*110)
+                print("="*120)
+                print("{:<20} {:<24} {:<28} {:<25} {:<25} ".format("Expense ID", "Title", "Category", "Amount", "Date and Time"))
+                print("="*120)
                 self.print_expense(found)
-                print("="*110)
+                print("="*120)
             else:
                 print("Expense Not Found!")
         elif search_option == 2:
@@ -221,12 +227,12 @@ class Expense_Manager:
                 return
             matches = [expense for expense in self.expenses if search_title.lower() in expense.title.lower()]
             if matches:
-                print("="*110)
-                print("{:<20} {:<24} {:<28} {:<25} ".format("Expense ID", "Title", "Category", "Amount"))
-                print("="*110)
+                print("="*120)
+                print("{:<20} {:<24} {:<28} {:<25} {:<25} ".format("Expense ID", "Title", "Category", "Amount", "Date and Time"))
+                print("="*120)
                 for match in matches:
                     self.print_expense(match)
-                print("="*110)
+                print("="*120)
             else:
                 print("Expense Not Found!")
         elif search_option == 3:
@@ -236,12 +242,12 @@ class Expense_Manager:
                 return
             matches = [expense for expense in self.expenses if search_category.lower() in expense.category.lower()]
             if matches:
-                print("="*110)
-                print("{:<20} {:<24} {:<28} {:<25} ".format("Expense ID", "Title", "Category", "Amount"))
-                print("="*110)
+                print("="*120)
+                print("{:<20} {:<24} {:<28} {:<25} {:<25} ".format("Expense ID", "Title", "Category", "Amount", "Date and Time"))
+                print("="*120)
                 for match in matches:
                     self.print_expense(match)
-                print("="*110)
+                print("="*120)
             else:
                 print("Expense Not Found!")
         else:
@@ -252,12 +258,13 @@ class Expense_Manager:
             print("No Expenses in record!")
             return
         self.expenses.sort(key=lambda emp: emp.expense_id)
-        print("="*100)
-        print("{:<20} {:<24} {:<28} {:<25} ".format("Expense ID", "Title", "Category", "Amount"))
-        print("="*100)
+        print("="*120)
+        print("{:<20} {:<24} {:<28} {:<25} {:<25} "
+                .format("Expense ID", "Title", "Category", "Amount", "Date and Time"))
+        print("="*120)
         for expense in self.expenses:
             self.print_expense(expense)
-        print("="*100)
+        print("="*120)
 
     def exit_system(self):
         print("---------------------------------------------------")
