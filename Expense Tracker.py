@@ -5,7 +5,7 @@
 import json
 import sys
 import os
-
+from datetime import datetime
 
 class Expense:
 
@@ -97,7 +97,7 @@ class Expense_Manager:
 
     def print_expense(self, expense):
         try:
-            print(f"{expense.expense_id:<20} {expense.title:<24} {expense.category:<28} {expense.format_currency(expense.amount):<25}")
+            print(f"{expense.expense_id:<20} {expense.title:<24} {expense.category:<28} {self.format_currency(expense.amount):<25}")
         except Exception as e: 
             print(f"An error occurred: {e}")
 
@@ -107,7 +107,7 @@ class Expense_Manager:
             return
         total = sum(expense.amount for expense in self.expenses)
         print("---------------------------------------------------")
-        print(f"Total Expenses: {Expense.format_currency(total)}")
+        print(f"Total Expenses: {self.format_currency(total)}")
         print("---------------------------------------------------")
 
     def highest_expense(self):
@@ -143,7 +143,7 @@ class Expense_Manager:
 
         average = sum(expense.amount for expense in self.expenses) / len(self.expenses)
         print("---------------------------------------------------")
-        print(f"Average Expense: {Expense.format_currency(average)}")
+        print(f"Average Expense: {self.format_currency(average)}")
         print("---------------------------------------------------")
 
     def add_expense(self):
@@ -252,12 +252,12 @@ class Expense_Manager:
             print("No Expenses in record!")
             return
         self.expenses.sort(key=lambda emp: emp.expense_id)
-        print("="*110)
+        print("="*100)
         print("{:<20} {:<24} {:<28} {:<25} ".format("Expense ID", "Title", "Category", "Amount"))
-        print("="*110)
+        print("="*100)
         for expense in self.expenses:
             self.print_expense(expense)
-        print("="*110)
+        print("="*100)
 
     def exit_system(self):
         print("---------------------------------------------------")
