@@ -4,8 +4,8 @@
 
 import json
 import sys
-import os
 from datetime import datetime
+
 
 class Expense:
 
@@ -15,23 +15,9 @@ class Expense:
         self.category = category
         self.amount = amount
         if date_time is None:
-            self.date_time = datetime.now().strftime("%d-%m-%y %H:%M:%S")
+            self.date_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         else:
             self.date_time = date_time
-
-    @classmethod
-    def with_date_time(cls, expense_id, title, category, amount, date_time):
-        expense = cls(expense_id, title, category, amount)
-        expense.date_time = date_time
-        return expense
-
-    def __str__(self):
-        return (
-            f"Title: {self.title}\n"
-            f"Expense ID: {self.expense_id}\n"
-            f"Category: {self.category}\n"
-            f"Amount: {self.format_currency(self.amount)}\n"
-            )
 
     def to_dict(self):
         return {
@@ -39,6 +25,8 @@ class Expense:
             "Expense ID": self.expense_id,
             "Category": self.category,
             "Amount": self.amount,
+            "Date and Time": self.date_time
+
         }
 
     @classmethod
@@ -47,7 +35,8 @@ class Expense:
             title = expense_data["Title"],
             expense_id = expense_data["Expense ID"],
             category = expense_data["Category"],
-            amount = expense_data["Amount"]
+            amount = expense_data["Amount"],
+            date_time=expense_data["Date and Time"]
         )
 
 
@@ -254,7 +243,7 @@ class Expense_Manager:
             print("Invalid choice! Please choose 1, 2, or 3.")
 
     def view_expense(self):
-        if len(self.expenses) == 0:
+        if not self.expenses:            
             print("No Expenses in record!")
             return
         self.expenses.sort(key=lambda emp: emp.expense_id)
@@ -285,7 +274,7 @@ class Expense_Manager:
             print("-"*110)
             print("Current Details")
             print("="*110)
-            print("{:<20} {:<24} {:<28} {:<25} ".format("Expense ID", "Title", "Category", "Amount"))
+            print("{:<20} {:<24} {:<28} {:<25} {:<25} ".format("Expense ID", "Title", "Category", "Amount", "Date and Time"))
             print("="*110)
             self.print_expense(expense)
             print("="*110)
@@ -332,6 +321,7 @@ class Expense_Manager:
             print("Expense Deleted Successfully!")
         else:
             print("Expense Not Found!")
+
 
 def main ():
 
@@ -386,4 +376,6 @@ def main ():
         else:
             print("Invalid Choice! Choose between 0 to 9")
 
-main()
+
+if __name__ == "__main__":
+    main()
