@@ -1,16 +1,18 @@
 # Expense Tracker System
 
-A beginner-friendly console-based Expense Tracker built with Python. This project demonstrates the use of JSON file handling, CRUD operations, searching, data analysis, and menu-driven programming to manage personal expenses.
+A console-based **Expense Tracker System** built with Python using **Object-Oriented Programming (OOP)**. This project demonstrates clean class design, automatic timestamping, JSON-based data persistence, CRUD operations, and expense analysis.
 
 ---
 
 ## Features
 
-* Add a new expense
-* View all expenses
-* Search expenses by Expense ID
-* Search expenses by Category
-* Update expense details
+* Add a new expense (automatically timestamped)
+* View all expenses (auto-sorted by Expense ID)
+* Search expenses by:
+  * Expense ID
+  * Title
+  * Category
+* Update expense details (leave a field blank to keep its current value)
 * Delete expenses with confirmation
 * Calculate total expenses
 * Display highest expense
@@ -26,23 +28,24 @@ A beginner-friendly console-based Expense Tracker built with Python. This projec
 
 * Python 3
 * JSON
+* `datetime` Module
 
 ---
 
 ## Concepts Covered
 
-* Functions
-* Lists
-* Dictionaries
+* Object-Oriented Programming (OOP)
+* Classes & Objects (`Expense`, `Expense_Manager`)
+* Constructors (`__init__`)
+* Class Methods (`@classmethod`) — `from_dict()`
+* Static Methods (`@staticmethod`) — `format_currency()`
+* Object Serialization (`to_dict()` / `from_dict()`)
+* Automatic Timestamping with `datetime`
 * JSON File Handling
-* File Read/Write
 * CRUD Operations
-* Loops
-* Conditional Statements
+* Exception Handling
 * Input Validation
-* Exception Handling (`try` / `except`)
-* Searching
-* Data Analysis
+* Menu-Driven Applications
 
 ---
 
@@ -51,32 +54,33 @@ A beginner-friendly console-based Expense Tracker built with Python. This projec
 ```text
 Expense-Tracker-System/
 │
-├── expense_tracker.py
-├── expenses.json
+├── Expense Tracker.py
 ├── .gitignore
 └── README.md
 ```
+
+> **Note:** `expenses.json` is created automatically when the program runs. It stores expense records locally and is excluded from the repository via `.gitignore` because it contains runtime data rather than source code.
 
 ---
 
 ## How to Run
 
-1. Clone the repository.
+1. Clone the repository:
 
 ```bash
 git clone https://github.com/osaid400/Expense-Tracker-System.git
 ```
 
-2. Navigate to the project folder.
+2. Navigate to the project folder:
 
 ```bash
 cd Expense-Tracker-System
 ```
 
-3. Run the program.
+3. Run the program:
 
 ```bash
-python expense_tracker.py
+python "Expense Tracker.py"
 ```
 
 ---
@@ -100,42 +104,19 @@ python expense_tracker.py
 ========================================================
 ```
 
----
-
 ### View Expenses
 
 ```text
-==============================================================================================================
-Expense ID          Title                    Category                  Amount
-==============================================================================================================
-101                 Groceries                Food                      Rs. 3,500.0
-102                 Bus Fare                 Transport                 Rs. 800.0
-103                 Electricity Bill         Bills                     Rs. 5,200.0
-==============================================================================================================
+==========================================================================================================================
+Expense ID           Title                    Category                     Amount                    Date and Time
+==========================================================================================================================
+
+101                  Groceries                Food                         Rs. 3,500                2023-03-01 12:00:00
+102                  Bus Fare                 Transport                    Rs. 800                  2023-03-02 08:00:00
+103                  Electricity Bill         Bills                        Rs. 5,200                2023-03-03 10:00:00
+==========================================================================================================================
+
 ```
-
----
-
-### Search Expense
-
-```text
-Search By:
-1. Search by ID
-2. Search by Category
-
-Enter your choice: 2
-Enter the Expense Category: Food
-
-==============================================================================================================
-Expense ID          Title                    Category                  Amount
-==============================================================================================================
-101                 Groceries                Food                      Rs. 3,500.0
-107                 Restaurant               Food                      Rs. 2,700.0
-112                 Coffee                   Food                      Rs. 650.0
-==============================================================================================================
-```
-
----
 
 ### Add Expense
 
@@ -143,60 +124,72 @@ Expense ID          Title                    Category                  Amount
 Enter the Expense ID: 121
 Enter the Expense Title: Printer Ink
 Enter the Expense Category: Office
+
 Enter the amount: 2500
 
 New Expense Added Successfully!
 ```
 
----
+### Search Expense
+
+```text
+Search By:
+1. Search by ID
+2. Search by Title
+3. Search by Category
+Enter your choice: 3
+Enter the Expense Category: Food
+
+=============================================================================================================================
+Expense ID           Title                    Category                     Amount                    Date and Time
+============================================================================================================================
+101                  Groceries                Food                         Rs. 3,500                2023-03-01 12:00:00
+107                  Restaurant               Food                         Rs. 2,700                2023-03-07 19:00:00
+112                  Coffee                   Food                         Rs. 650                  2023-03-12 10:00:00
+=============================================================================================================================
+```
 
 ### Expense Summary
 
 ```text
 ---------------------------------------------------
-Total Expenses: Rs. 62,350.0
+Total Expenses: Rs. 62,350
 ---------------------------------------------------
 
 ---------------------------------------------------
-Average Expense: Rs. 3,117.5
+Average Expense: Rs. 3,118
 ---------------------------------------------------
+```
+
+### Highest / Lowest Expense
+
+```text
+----------------------------------------------- Highest Expense ----------------------------------------------
+Expense ID           Title                    Category                     Amount                    Date and Time
+113                  Laptop Repair            Electronics                  Rs. 8,500                2023-03-13 13:00:00
 ```
 
 ---
 
-### Highest Expense
+## How Data Persistence Works
 
-```text
-Highest Expense
-
-Expense ID          Title                    Category                  Amount
-113                 Laptop Repair            Electronics               Rs. 8,500.0
-```
-
----
-
-### Lowest Expense
-
-```text
-Lowest Expense
-
-Expense ID          Title                    Category                  Amount
-112                 Coffee                   Food                      Rs. 650.0
-```
+* On startup, the program checks whether `expenses.json` exists.
+* If the file exists, all expense records are loaded and converted into `Expense` objects.
+* If it doesn't exist, a default set of sample expenses is created and saved.
+* Every expense is automatically stamped with the date and time it was added.
+* Every time an expense is added, updated, or deleted, the full expense list is saved back to `expenses.json`.
 
 ---
 
 ## Future Improvements
 
 * Monthly expense reports
-* Search by Title
 * Filter expenses by amount range
-* Expense statistics by category
+* Expense statistics broken down by category
 * Export reports to CSV
-* Date and time for each expense
-* Budget tracking
+* Budget tracking with alerts
 * SQLite database integration
-* Object-Oriented Programming (OOP) version
+* Build a GUI version using Tkinter
 
 ---
 
@@ -204,14 +197,14 @@ Expense ID          Title                    Category                  Amount
 
 This project helped me practice:
 
-* Building menu-driven console applications
-* Managing structured data using JSON
-* CRUD operations
-* Searching records
-* Data analysis using Python
-* File handling
-* Input validation
-* Writing clean and reusable functions
+* Designing applications using Object-Oriented Programming
+* Creating reusable classes and methods (`@classmethod`, `@staticmethod`)
+* Managing persistent data using JSON
+* Working with the `datetime` module for automatic timestamping
+* Performing CRUD (Create, Read, Update, Delete) operations
+* Analyzing data (totals, highest, lowest, average)
+* Validating user input and handling exceptions
+* Building structured, menu-driven console applications
 
 ---
 
