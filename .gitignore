@@ -1,1 +1,4 @@
-expenses.json
+data/
+Reports/
+__pycache__/
+*.pyc
